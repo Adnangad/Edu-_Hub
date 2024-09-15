@@ -23,4 +23,6 @@ urlpatterns = [
     path('download_file/<int:task_id>/', views.download_file, name='download_file'),
     path("submitproject", views.submitproject, name='submitproject'),
     path("gradeproject", views.gradeproject, name="gradeproject"),
+    path("setresource", views.setresource, name='setresource'),
+    path("getresource", views.getresource, name='getresource'),    
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

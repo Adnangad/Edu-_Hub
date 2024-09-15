@@ -472,11 +472,8 @@ def submitproject(request):
 def gradeproject(request):
     """Grades a students assignment"""
     if request.method == 'POST':
-        print('Starting')
         token = request.headers.get('X-Token')
-        print(token)
         auth = cache.get(f'auth_{token}')
-        print(auth)     
         if not auth:
             return JsonResponse({'error': 'Unauthorized'}, status=401)
         teacher = db_op.find_object(Teachers, email=auth)
@@ -485,17 +482,13 @@ def gradeproject(request):
             project_id = request.POST.get('project_id')
             score = request.POST.get('score')
             file = request.FILES.get('file')
-            print(f'Student id is {student_id}')
             student = db_op.find_object(Students, id=student_id)
-            print(student)
             task = Tasks.objects.get(course=teacher.subject, accomplished=True, graded=False, id=project_id, student_id=student)
-            print(task.course)
             task.score = score
             task.graded = True
             task.file = file
             task.save()
             average_score = db_op.get_average_score(student, teacher.subject)
-            print(average_score)
             course = Courses.objects.get(student_id=student, name=teacher.subject)
             print(f'Course is {course}')
             course.score = average_score
@@ -507,3 +500,40 @@ def gradeproject(request):
             print(f'error is:{e}')
             raise e    
     return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+@csrf_exempt
+def setresource(request):
+    """Adds a resource"""
+    if request.method == 'POST':
+        token = request.headers.get('X-Token')
+        auth = cache.get(f'auth_{token}')
+        if not auth:
+            return JsonResponse({'error': 'Unauthorized'}, status=401)
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+            link_type = data.get('type')
+            link = data.get('link')
+            if link_type == 'youtube_uri':
+                link = Resources(video_url=link)
+            else:
+                link = Resources(file_link=link)
+            link.save()
+            return JsonResponse({'message': 'Success'}, status=200)
+        except Exception as e:
+            print(f'error is: {e}')
+            return JsonResponse({'error': e}, safe=False, status=422)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+def getresource(request):
+    """Retreives the resources"""
+    if request.method == 'GET':
+        token = request.headers.get('X-Token')
+        auth = cache.get(f'auth_{token}')
+        if auth:
+            resources = [model_to_dict(obj) for obj in Resources.objects.all()]
+            return JsonResponse({'resources': resources}, status=200, safe=False)
+        else:
+            return JsonResponse({'error': 'Unauthorized'}, status=401)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=405)

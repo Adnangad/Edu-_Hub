@@ -48,12 +48,14 @@ class Schedule(models.Model):
 
 class Resources(models.Model):
     """defines a resource class"""
-    
+    file_link = models.CharField(max_length=300, null=True)
+    video_url = models.CharField(max_length=400, null=True)
+
     
 class DB_Operations:
     """Performs actions on the database"""
     
-    db_models = [Students, Teachers, Courses, Tasks, Schedule]
+    db_models = [Students, Teachers, Courses, Tasks, Schedule, Resources]
     available_courses = ['English', 'Chemistry', 'Physics', 'Biology']
     
     def find_object(self, model_name, **kwargs):
@@ -131,7 +133,7 @@ class DB_Operations:
     @staticmethod
     def get_all(model_name):
         """Retreives all model objects"""
-        if model_name not in [Students, Teachers, Courses, Tasks, Schedule] or model_name is None:
+        if model_name not in [Students, Teachers, Courses, Tasks, Schedule, Resources] or model_name is None:
             raise TypeError("Model doesn't exist")
         objs = [model_to_dict(obj) for obj in model_name.objects.all()]
         return objs
