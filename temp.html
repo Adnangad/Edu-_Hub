@@ -1,0 +1,401 @@
+class Tasks(models.Model):
+    """defines the tasks table"""
+    student_id = models.ForeignKey(Students, on_delete=models.CASCADE)
+    created_on = models.DateField(auto_now_add=True)
+    course = models.CharField(max_length=70, default=None)
+    due_on = models.DateField()
+    title = models.CharField(max_length=300)
+    accomplished = models.BooleanField(default=False)
+    file = models.FileField(upload_to='/uploads/tasks', null=True, blank=True)
+    
+    
+class DB_Operations:
+    """Performs actions on the database"""
+    
+    db_models = [Students, Teachers, Courses, Tasks]
+    available_courses = ['English', 'Chemistry', 'Physics', 'Biology']
+    
+    def find_object(self, model_name, **kwargs):
+        """Returns an instance of the model"""
+        if model_name not in self.db_models or model_name is None:
+            raise TypeError("Model doesn't exist")
+        obj = model_name.objects.filter(**kwargs).first()
+        if obj is None:
+            raise NoResultFound('Object doesnt exist')
+        return obj
+    
+       
+    def create_object(self, model_name, **kwargs):
+        """Creates an object based on model"""
+        instance_obj = None
+        if model_name not in self.db_models or model_name is None:
+            raise TypeError("Model doesn't exist")
+        else:
+            try:
+                obj = self.find_object(model_name, **kwargs)
+                if obj:
+                    raise ValueError(f'{model_name} already exists')
+            except IntegrityError as e:
+                if 'UNIQUE constraint failed' in str(e):
+                    raise ValueError(f'A {model_name} with the name already exists')
+                else:
+                    raise ValueError(f'{e}')
+            except NoResultFound:
+                for key, value in kwargs.items():
+                    if key == 'password':
+                        kwargs[key] = make_password(value)
+                try:
+                    instance_obj = model_name(**kwargs)
+                    instance_obj.save()
+                    return instance_obj
+                except Exception as e:
+                    raise Exception(f'The exception is: {e}')
+    
+    def update_obj(self, model_name, filter, **kwargs):
+        """Updates an object"""
+        print('Starting')
+        if model_name not in self.db_models or model_name is None:
+            raise TypeError("Model doesn't exist")
+        fields = [field.name for field in model_name._meta.get_fields()]
+        for key, value in kwargs.items():
+            if key not in fields:
+                raise InvalidRequestError
+        try:
+            if model_name == Students or model_name == Teachers:
+                obj = self.find_object(model_name, email=filter)
+            else:
+                obj = self.find_object(model_name, student_id=filter)
+            for key, value in kwargs.items():
+                if key == 'password':
+                    value = make_password(value)
+                setattr(obj, key, value)
+            obj.save()
+        except NoResultFound:
+            print('raising exception')
+            raise NoResultFound('Object does not exist')
+        except Exception as e:
+            raise
+    
+    def del_obj(self, model_name, **filter):
+        """Deletes an object"""
+        if model_name not in self.db_models or model_name is None:
+            raise TypeError("Model doesn't exist")
+        try:
+            obj = self.find_object(model_name, **filter)
+            obj.delete()
+            return 0
+        except NoResultFound:
+            raise TypeError('obj doesnt exist')
+    
+    @staticmethod
+    def get_all(model_name):
+        """Retreives all model objects"""
+        if model_name not in [Students, Teachers, Courses] or model_name is None:
+            raise TypeError("Model doesn't exist")
+        objs = [model_to_dict(obj) for obj in model_name.objects.all()]
+        return objs
+    
+    def get_registeredCourses(self, student_id):
+        """Gets all the courses a student has registered to"""
+        try:
+            objs = list(model_to_dict(obj) for obj in Courses.objects.all().filter(student_id=student_id))
+            return objs
+        except NoResultFound:
+            raise ValueError('Unauthorized User')
+        
+    def is_valid(self, model_name, password, **filters):
+        """Validates a users credentials"""
+        try:
+            obj = self.find_object(model_name, **filters)
+            if check_password(password, obj.password):
+                return True
+            else:
+                return False
+        except NoResultFound:
+            raise ValueError('No user matches the credentials')
+        except Exception as e:
+            raise TypeError(f'{e}')
+    
+    def get_students_by_course(self, coursename):
+        """Gets all students based on their registered courses"""
+        temp = [model_to_dict(obj) for obj in Courses.objects.all().filter(name=coursename)]
+        print(temp)
+        students = [student['student_id'] for student in temp]
+        ls = []
+        for std in students:
+            stud = self.find_object(Students, id=std)
+            ls.append(model_to_dict(stud))
+        return ls
+
+
+        @csrf_exempt
+        def signUp(request):
+            """Adds a user to the db"""
+            otps = ['hello', 'ab', 'cd']
+            
+            if request.method == 'POST':
+                try:
+                    data = json.loads(request.body.decode('utf-8'))
+                    first_name = data.get('first_name')
+                    last_name = data.get('last_name')
+                    model_name = data.get('type')
+                    email = data.get('email')
+                    password = data.get('password')
+                    otp = data.get('otp')
+                    token = uuid4()
+                    if model_name == 'Teachers':
+                        if otp not in otps:
+                            return JsonResponse({'error': 'Wrong OTP'}, status=401)
+                        obj = db_op.create_object(Teachers, first_name=first_name, last_name=last_name, email=email, password=password)
+                    elif model_name == 'Students':
+                        obj = db_op.create_object(Students, first_name=first_name, last_name=last_name, email=email, password=password)
+                    else:
+                        return JsonResponse({'error': 'Invalid model name'}, status=400)
+                    cache.set(f'auth_{token}', obj.email, 86400)
+                    user_dict = model_to_dict(obj)
+                    subject = 'Signed Up to EDU Hub'
+                    message = f'Dear {first_name}, welcome to EDU Hub'
+                    email_from = os.getenv('DEFAULT_FROM_EMAIL')
+                    recipient = [email]
+                    send_mail(subject, message, email_from, recipient)
+                    return JsonResponse({'user': user_dict, 'token': token}, safe=False)
+                        
+                except ValueError as e:
+                    return JsonResponse({'error': f'Invalid data: {str(e)}'}, status=400)
+                
+                except IntegrityError:
+                    return JsonResponse({'error': f'A user with email {email} already exists'}, status=400)
+                
+                except Exception as e:
+                    return JsonResponse({'error': f'An error occurred: {str(e)}'}, status=500)
+        
+        @csrf_exempt
+        def login(request):
+            """Logs in a user"""
+            if request.method == 'POST':
+                data = json.loads(request.body.decode('utf-8'))
+                model_name = data.get('type')
+                email = data.get('email')
+                password = data.get('password')
+                token = uuid4()
+                try:
+                    if model_name == 'Students':
+                        print('yesss')
+                        value = db_op.is_valid(Students, password, email=email)
+                        print(value)
+                        obj = db_op.find_object(Students, email=email)
+                    elif model_name == 'Teachers':
+                        value = db_op.is_valid(Teachers, password, email=email)
+                        obj = db_op.find_object(Teachers, email=email)
+                    else:
+                        return JsonResponse({'error': 'Invalid model name'}, status=400)
+        
+                    if value is True:
+                        print('Yessss')
+                        auth = f'auth_{token}'
+                        print(auth)
+                        cache.set(auth, obj.email, 86400)
+                        print(f'auth token is {auth}')
+                        obj = model_to_dict(obj)
+                        return JsonResponse({'message': 'You have successfully logged in', 'user': obj, 'token': token}, safe=False)
+                    else:
+                        return JsonResponse({'error': 'Wrong password'}, status=401)
+                except ValueError as e:
+                    return JsonResponse({'error': f'{e}'}, status=400)
+                except Exception as e:
+                    return JsonResponse({'error': f'{e}'}, status=404)
+            
+        def logout(request):
+            """Deletes users session"""
+            token = request.headers['X-Token']
+            user_auth = cache.get(f'auth_{token}')
+            if user_auth:
+                cache.delete(f'auth_{token}')
+                return JsonResponse({}, status=200, safe=False)
+            else:
+                return JsonResponse({'error': 'Unable to log out'}, status=404, safe=False)
+        
+        
+        def getStudents(request):
+            """Retrieves all students"""
+            if request.method == 'GET':
+                try:
+                    token = request.headers['X-Token']
+                    print(token)
+                except Exception as e:
+                    return JsonResponse({'error': e})
+                user_auth = cache.get(f'auth_{token}')
+                print(user_auth)
+                if user_auth:
+                    try:
+                        objs = db_op.get_all(Students)
+                        return JsonResponse({'Students': objs}, safe=False)
+                    except TypeError:
+                        return JsonResponse({'error': 'Type doesnt exist'}, status=400)
+                else:
+                    return JsonResponse({"error": 'unauthorized, please log in'}, status=401)
+        
+        def offered(request):
+            """Retreives a  list of offered courses"""
+            if request.method == 'GET':
+                token = request.headers['X-Token']
+                user_auth = cache.get(f'auth_{token}')
+                if user_auth:
+                    return JsonResponse({'Courses': available_courses}, safe=False)
+                else:
+                    return JsonResponse({"error": 'unauthorized, please log in'}, status=401)
+            else:
+                return JsonResponse({"error": 'Invalid request method'}, status=404)                
+            
+        
+        def getTeachers(request):
+            """Retrieves all teachers"""
+            if request.method == 'GET':
+                token = request.headers['X-Token']
+                user_auth = cache.get(f'auth_{token}')
+                if user_auth:
+                    try:
+                        objs = db_op.get_all(Teachers)
+                        return JsonResponse({'Teachers': objs}, safe=False)
+                    except TypeError:
+                        return JsonResponse({'error': 'Type doesnt exist'}, status=400)
+                else:
+                    return JsonResponse({"error": 'unauthorized, please log in'}, status=401)
+        
+        def getCourses(request):
+            """Gets al the courses the student has registered for"""
+            token = request.headers['X-Token']
+            user_auth = cache.get(f'auth_{token}')
+            print(f'token is {token}')
+            if request.method == 'GET':
+                if user_auth:
+                    try:
+                        user = db_op.find_object(Students, email=user_auth)
+                        print(user)
+                        user_id = user.id                
+                        registered_courses = db_op.get_registeredCourses(user_id)
+                        objs = registered_courses
+                        return JsonResponse(objs, safe=False)
+                    except Exception as e:
+                        return JsonResponse({'error': e}, status=400)
+                return JsonResponse({"error": 'unauthorized, please login'}, status=401)        
+                        
+        
+        @csrf_exempt
+        def registerCourse(request):
+            """Registers a user to a course"""
+            token = request.headers['X-Token']
+            user_auth = cache.get(f'auth_{token}')
+            if request.method == 'POST':
+                data = json.loads(request.body.decode('utf-8'))
+                course = data.get('course')
+                print(course)
+                if user_auth:
+                    try:
+                        user = db_op.find_object(Students, email=user_auth)
+                        print(user.id)
+                        try:
+                            if course not in available_courses:
+                                return JsonResponse({'error': 'We are yet to offer that course'}, status=404)
+                            registercourse = db_op.create_object(Courses, student_id=user, name=course, score=0)
+                        except Exception as e:
+                            return JsonResponse({'error': e}, status=400)
+                        course_dict = model_to_dict(registercourse)
+                        print(course_dict)
+                        return JsonResponse(course_dict, safe=False)
+                    except Exception as e:
+                        return JsonResponse({'error': e}, status=400)
+                else:
+                    return JsonResponse({'error': 'Please login to continue'}, status=401)
+        
+        @csrf_exempt
+        def deregister(request):
+            """Deregisters a user from a course"""
+            token = request.headers['X-Token']
+            user_auth = cache.get(f'auth_{token}')
+            if request.method == 'DELETE':
+                data = json.loads(request.body.decode('utf-8'))
+                course = data.get('course')
+                if user_auth:
+                    try:
+                        user = db_op.find_object(Students, email=user_auth)
+                        print(user.id)
+                        try:
+                            print('dereg beggining')
+                            registercourse = db_op.del_obj(Courses, student_id=user, name=course)
+                            if registercourse == 0:
+                                return JsonResponse({'message': 'You have been removed from the subjects registry'}, safe=False, status=200)
+                        except Exception as e:
+                            return JsonResponse({'error': e}, status=400)
+                    except Exception as e:
+                        return JsonResponse({'error': e}, status=400)
+                else:
+                    return JsonResponse({'error': 'Please login to continue'}, status=401)
+        
+        @csrf_exempt
+        def update_account(request):
+            """Updates a users account"""
+            if request.method == 'PUT':
+                token = request.headers.get('X-Token')
+                auth = cache.get(f'auth_{token}')
+                if auth:
+                    data = json.loads(request.body.decode('utf-8'))
+                    model_type = data.get('type')
+                    email = data.get('email')
+                    print(email)
+                    password = data.get('old_password')
+                    if model_type == 'Students':
+                        try:
+                            if db_op.is_valid(Students, password, email=email) is False:
+                                return JsonResponse({'error': 'Invalid user/password'}, status=401)
+                        except Exception as e:
+                            return JsonResponse({'error': str(e)}, status=404, safe=False)
+                        try:
+                            obj = db_op.find_object(Students, email=email)
+                            for key, value in data.items():
+                                if key not in ['email', 'type', 'old_password']:
+                                    setattr(obj, key, value)
+                            obj.save()
+                            return JsonResponse({'message': 'Success'}, status=200)
+                        except NoResultFound as e:
+                            return JsonResponse({'error': str(e)}, status=404, safe=False)
+                    if model_type == 'Teachers':
+                        if db_op.is_valid(Teachers, password, email=email) is False:
+                            return JsonResponse({'error': 'Invalid user/password'}, status=401)
+                        try:
+                            obj = db_op.find_object(Teachers, email=email)
+                            for key, value in data.items():
+                                if key not in ['email', 'old_password', 'type']:
+                                    setattr(obj, key, value)
+                            obj.save()
+                            return JsonResponse({'message': 'Success'}, status=200)
+                        except Exception as e:
+                            return JsonResponse({'error': str(e)}, status=404, safe=False)
+                else:
+                    return JsonResponse({'error': 'Unauthorized'}, status=401)
+            
+            return JsonResponse({'error': 'Invalid request method'}, status=405)
+                 
+        
+        @csrf_exempt
+        def upload(request):
+            if request.method == 'POST':
+                try:
+                    # Assuming 'title' is passed along with the form data
+                    title = request.POST.get('title')  # Get a specific field from the POST data
+                    file = request.FILES.get('file')   # Get the uploaded file
+                    
+                    if not file:
+                        return JsonResponse({'error': 'No file provided'}, status=400)
+                    
+                    # Save the file to the desired location (optional)
+                    # For now, let's just print the title and file name
+                    print(f'Title: {title}')
+                    print(f'File: {file.name}')
+                    
+                    return JsonResponse({'message': 'Success'}, status=200)
+                
+                except Exception as e:
+                    return JsonResponse({'error': str(e)}, status=500)
+        
+            return JsonResponse({'error': 'Invalid request method'}, status=405)

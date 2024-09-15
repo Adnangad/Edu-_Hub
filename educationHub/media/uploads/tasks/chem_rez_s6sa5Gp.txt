@@ -1,0 +1,4 @@
+q1: What is the chemical symbol for Oxygen: O2
+correct
+q2: What is an acid: A compound formed by adding a salt and base 
+wrong
