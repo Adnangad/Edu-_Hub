@@ -4,7 +4,6 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path("", views.index, name="index"),
     path("signUp", views.signUp, name="signUp"),
     path("getStudents", views.getStudents, name="getStudents"),
     path("getTeachers", views.getTeachers, name="getTeachers"),
@@ -24,5 +23,7 @@ urlpatterns = [
     path("submitproject", views.submitproject, name='submitproject'),
     path("gradeproject", views.gradeproject, name="gradeproject"),
     path("setresource", views.setresource, name='setresource'),
-    path("getresource", views.getresource, name='getresource'),    
+    path("getresource", views.getresource, name='getresource'),
+    path("getgraded", views.getgraded, name="getgraded"),
+    path("chatRoom", views.chatRoom, name="chatRoom")
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

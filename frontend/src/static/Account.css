@@ -1,0 +1,98 @@
+.accountcont {
+  margin-left: 200px;
+  margin-top: 20px;
+  width: 85%;
+}
+.details {
+  border: none;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  float: left;
+  width: 40%;
+  height: 250px;
+  margin-top: 3px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  padding-top: 20px;
+  justify-content: left;
+  padding-left: 100px;
+}
+.info {
+  border: none;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  float: right;
+  width: 40%;
+  height: 250px;
+  margin-top: 3px;
+  margin-left: 20px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  padding-top: 20px;
+  padding-left: 100px;
+}
+
+.offered {
+  border: none;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  float: left;
+  width: 45%;
+  height: auto;
+  margin-top: 20px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  padding-top: 20px;
+  justify-content: left;
+  padding-left: 30px;
+}
+.registered {
+  border: none;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  float: right;
+  width: 45%;
+  height: auto;
+  margin-top: 20px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  padding-left: 30px;
+  padding-top: 20px;
+}
+.registered:hover,
+.details:hover,
+.info:hover,
+.offered:hover {
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  transform: translate(0px, -8px);
+}
+.registered ul,
+.offered ul {
+  list-style-type: none;
+}
+.registered ul li,
+.offered ul li {
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+.regBut, .unregBut {
+  cursor: pointer;
+  height: 30px;
+  width: 90px;
+  border-radius: 5px;
+}
+.spacer {
+  display: inline-block;
+  width: 50px;
+}
+.regBut:hover{
+    background-color: greenyellow;
+}
+.unregBut:hover {
+    background-color: red;
+}
+
+.info p {
+    font-size: 20px;
+    color: black;
+}

@@ -1,0 +1,323 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f7f7f7;
+  color: black;
+}
+
+.stdcont h2,
+h3 {
+  margin: 0;
+  font-size: 30px;
+  color: gold;
+}
+.teachersContent h2,
+h3 {
+  color: blueviolet;
+}
+a {
+  text-decoration: none;
+}
+
+.stdcont .logo {
+  text-align: center;
+  background-color: white;
+  padding: 20px 0;
+  color: orange;
+  font-size: 36px;
+  height: 50px;
+  width: 100%;
+  font-weight: bold;
+  letter-spacing: 1px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.stdcont .navBar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 13%;
+  background-color: #343a40;
+  height: 100vh;
+  font-size: 30px;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+.stdcont .navBarLinks {
+  list-style-type: none;
+  padding-left: 10px;
+  margin: 0;
+}
+
+.teachersContent .logo {
+  text-align: center;
+  background-color: white;
+  padding: 20px 0;
+  color: blueviolet;
+  font-size: 36px;
+  height: 50px;
+  width: 100%;
+  font-weight: bold;
+  letter-spacing: 1px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.teachersContent .navBar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 13%;
+  background-color: blueviolet;
+  height: 100vh;
+  font-size: 30px;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+.teachersContent .navBarLinks {
+  list-style-type: none;
+  padding-left: 10px;
+  margin: 0;
+}
+
+.navBarLinks {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.navBarLinks li {
+  margin: 20px 0;
+}
+
+.navBarLinks a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 18px;
+  padding: 15px;
+  display: block;
+  transition: background-color 0.3s ease;
+  border-radius: 4px;
+}
+
+.navBarLinks a:hover {
+  background-color: #4a8ac2;
+}
+
+.stddashCont {
+  margin-left: 13%;
+  padding: 20px;
+}
+
+.stddashCont .schedule {
+  border: none;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  float: left;
+  width: 40%;
+  height: 250px;
+  margin-top: 3px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  padding-top: 20px;
+  justify-content: left;
+  padding-left: 100px;
+}
+
+.stdcont .stddashCont .schedule h2,
+h3 {
+  color: goldenrod;
+}
+
+.stddashCont .schedule ul {
+  list-style-type: none;
+  padding-bottom: 20px;
+}
+
+.stddashCont .schedule ul li a {
+  list-style-type: none;
+  color: orangered;
+}
+
+.stddashCont .schedule ul li a:hover {
+  color: orange;
+}
+
+.stdcont .stddashCont .scores {
+  border: none;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  float: right;
+  width: 40%;
+  height: 250px;
+  margin-top: 3px;
+  margin-left: 20px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  padding-top: 20px;
+  padding-left: 100px;
+}
+
+.stdcont .stddashCont .scores h3 {
+  margin-left: 50px;
+}
+
+.stdcont .stddashCont .scores ul {
+  list-style-type: none;
+  padding-top: 20px;
+  color: black;
+  margin-bottom: 50px;
+}
+
+.stdcont .stddashCont .scores ul li {
+  padding-top: 10px;
+  font-size: 25px;
+  list-style-type: none;
+  border-bottom: 0.5px solid #e0e0e0;
+}
+
+.stdcont .stddashCont .registered {
+  border: none;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  float: left;
+  width: 45%;
+  height: auto;
+  margin-top: 20px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  padding-top: 20px;
+  justify-content: left;
+  padding-left: 30px;
+}
+
+.stdcont .stddashCont .registered ul {
+  list-style-type: none;
+  color: black;
+  padding-bottom: 20px;
+  margin-bottom: 50px;
+}
+
+.stdcont .stddashCont .registered ul li {
+  padding-top: 10px;
+  font-size: 25px;
+  list-style-type: none;
+}
+
+.teachcont {
+  margin-left: 170px;
+  width: 87%;
+  overflow: hidden;
+  position: relative;
+  margin-top: 20px;
+}
+
+.teachersContent .schedule {
+  border: none;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  float: left;
+  width: 40%;
+  height: 350px;
+  margin-top: 3px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  padding-top: 20px;
+  justify-content: left;
+  padding-left: 100px;
+  margin-left: 15px;
+}
+.teacherSchedule {
+  border: none;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  float: right;
+  width: 40%;
+  height: 250px;
+  margin-top: 3px;
+  margin-left: 10px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  padding-top: 20px;
+  padding-left: 100px;
+}
+.teachersContent .teacherSchedule ul {
+  list-style-type: none;
+}
+
+.teachersContent .teacherSchedule ul li a {
+  color: blueviolet;
+}
+
+.teachersContent .teacherSchedule ul li a:hover {
+  color: gold;
+}
+
+.teachcont form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.teachcont input {
+  padding: 12px;
+  font-size: 18px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+.teachcont button {
+  padding: 11px;
+  font-size: 17px;
+  border: 1px solid wheat;
+  background-color: blueviolet;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.teachcont button:hover {
+  background-color: orangered;
+}
+.resourceForm {
+  border: none;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  float: left;
+  width: 45%;
+  height: auto;
+  margin-top: 100px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  padding-top: 20px;
+  justify-content: left;
+  padding-left: 30px;
+
+}
+
+.resourceForm {
+  border: none;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  float: left;
+  width: 45%; 
+  height: 350px;
+  margin-top: 20px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  justify-content: flex-start;
+  padding-left: 30px;
+  background-color: #fff;
+}
+
+.teachcont::after {
+  content: "";
+  display: table;
+  clear: both;
+}

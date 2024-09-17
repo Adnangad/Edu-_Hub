@@ -9,6 +9,9 @@ import Dashboard from "./pages/Dashboard";
 import File from "./pages/File";
 import Account from "./pages/Account";
 import Projects from "./pages/Projects";
+import Resources from "./pages/Resources";
+import Peers from "./pages/Peers";
+import Chat from "./pages/Chat";
 
 const router = createBrowserRouter([
   {
@@ -34,6 +37,18 @@ const router = createBrowserRouter([
   {
     path: "/projects",
     element: <Projects />,
+  },
+  {
+    path: "/resources",
+    element: <Resources/>,
+  },
+  {
+    path: "/peers",
+    element: <Peers/>,
+  },
+  {
+    path: "/chat",
+    element: <Chat/>,
   },
 ]);
 

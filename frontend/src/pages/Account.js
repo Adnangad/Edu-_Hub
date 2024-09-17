@@ -56,6 +56,10 @@ function Account() {
       const data = await response.json();
       if (response.status !== 200) {
         alert(data.error);
+      }
+      if (response.status === 401) {
+        alert("Please sign in to continue");
+        navigate("/");
       } else {
         setOffered(data["Courses"]);
       }
@@ -139,78 +143,87 @@ function Account() {
   if (model === "Students") {
     return (
       <>
-        <div className="logo">
-          <h2>EDU HUB</h2>
-        </div>
-        <nav className="navBar">
-          <ul className="navBarLinks">
-            <li>
-              <Link to="/dashboard">Dashboard</Link>
-            </li>
-            <li>
-              <Link to="/resources">Resources</Link>
-            </li>
-            <li>
-              <Link to="/projects">Projects</Link>
-            </li>
-            <li>
-              <Link to="/peers">Peers</Link>
-            </li>
-          </ul>
-        </nav>
-        <div className="accountcont">
-          <div className="details">
-            <h3>Account Details</h3>
-            <form id="updateForm" onSubmit={updateAccount}>
-              <label htmlFor="updf_name">First Name:</label>
-              <input
-                type="text"
-                id="updf_name"
-                name="name"
-                placeholder="Enter Your First Name"
-                className="update_bar"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-              />
+        <div className="stdcont">
+          <div className="logo">
+            <h2>EDU HUB</h2>
+          </div>
+          <nav className="navBar">
+            <ul className="navBarLinks">
+              <li>
+                <Link to="/dashboard">Dashboard</Link>
+              </li>
+              <li>
+                <Link to="/resources">Resources</Link>
+              </li>
+              <li>
+                <Link to="/projects">Projects</Link>
+              </li>
+              <li>
+                <Link to="/peers">Peers</Link>
+              </li>
+              <li>
+                <Link to="/account">Account</Link>
+              </li>
+              <li>
+                <Link to="/chat">Chat</Link>
+              </li>
+            </ul>
+          </nav>
+          <div className="accountcont">
+            <div className="details">
+              <h3>Update Account</h3>
+              <form id="updateForm" onSubmit={updateAccount}>
+                <label htmlFor="updf_name">First Name:</label>
+                <input
+                  type="text"
+                  id="updf_name"
+                  name="name"
+                  placeholder="Enter Your First Name"
+                  className="update_bar"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                />
 
-              <label htmlFor="updl_name">Last Name:</label>
-              <input
-                type="text"
-                id="updl_name"
-                name="name"
-                placeholder="Enter Your Last Name"
-                className="update_bar"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-              />
+                <label htmlFor="updl_name">Last Name:</label>
+                <input
+                  type="text"
+                  id="updl_name"
+                  name="name"
+                  placeholder="Enter Your Last Name"
+                  className="update_bar"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                />
 
-              <label htmlFor="uppassword">Password:</label>
-              <input
-                type="password"
-                id="uppassword"
-                name="password"
-                placeholder="Enter Password"
-                className="update_bar"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-
-              <input type="submit" value="Submit" className="sub_but" />
-            </form>
+                <label htmlFor="uppassword">Password:</label>
+                <input
+                  type="password"
+                  id="uppassword"
+                  name="password"
+                  placeholder="Enter Password"
+                  className="update_bar"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <br />
+                <button type="submit" className="updatebut">
+                  Update Account
+                </button>
+              </form>
+            </div>
             <div className="info">
+              <h3>Account Details</h3>
               <p>First Name: {firstName}</p>
               <p>Last Name: {lastName}</p>
               <p>Email: {email}</p>
             </div>
-          </div>
-
-          <div className="course">
             <div className="offered">
               <h3>Available Courses</h3>
               <ul>
                 {offered.map((item, index) => (
                   <li key={index}>
                     {item}
+                    <span className="spacer"></span>
                     <button
                       onClick={(event) => regCourse(event, item)}
                       className="regBut"
@@ -229,11 +242,12 @@ function Account() {
                 {registeredCourses.map((course) => (
                   <li key={course.id || course.name}>
                     {course.name}
+                    <span className="spacer"></span>
                     <button
                       onClick={(event) => deregister(event, course.name)}
-                      className="regBut"
+                      className="unregBut"
                     >
-                      Deregister
+                      Unregister
                     </button>
                   </li>
                 ))}
@@ -246,65 +260,73 @@ function Account() {
   } else {
     return (
       <>
-        <div className="logo">
-          <h2>EDU HUB</h2>
-        </div>
-        <nav className="navBar">
-          <ul className="navBarLinks">
-            <li>
-              <Link to="/dashboard">Dashboard</Link>
-            </li>
-            <li>
-              <Link to="/resources">Resources</Link>
-            </li>
-            <li>
-              <Link to="/projects">Projects</Link>
-            </li>
-            <li>
-              <Link to="/peers">Peers</Link>
-            </li>
-          </ul>
-        </nav>
-        <div className="accountcont">
-          <div className="details">
-            <h3>Account Details</h3>
-            <form id="updateForm" onSubmit={updateAccount}>
-              <label htmlFor="updf_name">First Name:</label>
-              <input
-                type="text"
-                id="updf_name"
-                name="name"
-                placeholder="Enter Your First Name"
-                className="update_bar"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-              />
+        <div className="teachersContent">
+          <div className="logo">
+            <h2>EDU HUB</h2>
+          </div>
+          <nav className="navBar">
+            <ul className="navBarLinks">
+              <li>
+                <Link to="/dashboard">Dashboard</Link>
+              </li>
+              <li>
+                <Link to="/projects">Projects</Link>
+              </li>
+              <li>
+                <Link to="/peers">Students</Link>
+              </li>
+              <li>
+                <Link to="/account">Account</Link>
+              </li>
+              <li>
+                <Link to="/chat">Chat</Link>
+              </li>
+            </ul>
+          </nav>
+          <div className="accountcont">
+            <div className="details">
+              <h3>Update Details</h3>
+              <form id="updateForm" onSubmit={updateAccount}>
+                <label htmlFor="updf_name">First Name:</label>
+                <input
+                  type="text"
+                  id="updf_name"
+                  name="name"
+                  placeholder="Enter Your First Name"
+                  className="update_bar"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                />
 
-              <label htmlFor="updl_name">Last Name:</label>
-              <input
-                type="text"
-                id="updl_name"
-                name="name"
-                placeholder="Enter Your Last Name"
-                className="update_bar"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-              />
+                <label htmlFor="updl_name">Last Name:</label>
+                <input
+                  type="text"
+                  id="updl_name"
+                  name="name"
+                  placeholder="Enter Your Last Name"
+                  className="update_bar"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                />
 
-              <label htmlFor="uppassword">Password:</label>
-              <input
-                type="password"
-                id="uppassword"
-                name="password"
-                placeholder="Enter Password"
-                className="update_bar"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-
-              <input type="submit" value="Submit" className="sub_but" />
-            </form>
+                <label htmlFor="uppassword">Password:</label>
+                <input
+                  type="password"
+                  id="uppassword"
+                  name="password"
+                  placeholder="Enter Password"
+                  className="update_bar"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <br />
+                <button type="submit" className="updatebut">
+                  Update Account
+                </button>
+              </form>
+            </div>
             <div className="info">
+              <h3>Account Details</h3>
               <p>First Name: {firstName}</p>
               <p>Last Name: {lastName}</p>
               <p>Email: {email}</p>

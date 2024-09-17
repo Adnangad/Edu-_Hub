@@ -48,15 +48,14 @@ class Schedule(models.Model):
 
 class Resources(models.Model):
     """defines a resource class"""
-    file_link = models.CharField(max_length=300, null=True)
-    video_url = models.CharField(max_length=400, null=True)
+    link = models.CharField(max_length=400, null=True)
+    link_type = models.CharField(max_length=50, null=True)
 
     
 class DB_Operations:
     """Performs actions on the database"""
     
     db_models = [Students, Teachers, Courses, Tasks, Schedule, Resources]
-    available_courses = ['English', 'Chemistry', 'Physics', 'Biology']
     
     def find_object(self, model_name, **kwargs):
         """Returns an instance of the model"""

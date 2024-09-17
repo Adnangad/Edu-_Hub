@@ -6,12 +6,11 @@ import "../static/Projects.css";
 function Projects() {
   const token = sessionStorage.getItem("token");
   const model = sessionStorage.getItem("modelType");
-  const [registeredCourses, setRegistered] = useState([]);
   const [projects, setProjects] = useState([]);
   const navigate = useNavigate();
   const [ungraded, setUngraded] = useState([]);
+  const [gradedProjects, setGradedProjects] = useState([]);
 
-  const regurl = "http://127.0.0.1:8000/edu/getCourses";
   const taskUrl = "http://127.0.0.1:8000/edu/getTasks";
   const submitUrl = "http://127.0.0.1:8000/edu/submitproject";
 
@@ -19,6 +18,8 @@ function Projects() {
   const createUrl = "http://127.0.0.1:8000/edu/upload";
 
   const gradeurl = "http://127.0.0.1:8000/edu/gradeproject";
+
+  const gradedUrl = "http://127.0.0.1:8000/edu/getgraded";
 
   const [assignment, setAssignment] = useState(null);
   const [dueDate, setDueDate] = useState("");
@@ -168,9 +169,26 @@ function Projects() {
       }
     }
 
+    async function getgradedProjects() {
+      try {
+        const response = await fetch(gradedUrl, {
+          method: "GET",
+          headers: { "Content-Type": "Application/json", "X-Token": token },
+        });
+        const data = await response.json();
+        if (response.status === 200) {
+          setGradedProjects(data.results);
+        } else {
+          alert(data.error);
+        }
+      } catch (error) {
+        alert("Unable to fetch graded projects for grading");
+      }
+    }
+
     if (model === "Students") {
-      fetchData(regurl, setRegistered);
       fetchData(taskUrl, setProjects);
+      getgradedProjects();
     } else {
       getUngraded();
     }
@@ -179,6 +197,7 @@ function Projects() {
   if (model === "Students") {
     return (
       <>
+      <div className="stdcont">
         <header className="logo">
           <h2>EDU HUB</h2>
         </header>
@@ -191,6 +210,9 @@ function Projects() {
               <Link to="/resources">Resources</Link>
             </li>
             <li>
+              <Link to="/projects">Projects</Link>
+            </li>
+            <li>
               <Link to="/peers">Peers</Link>
             </li>
             <li>
@@ -198,31 +220,35 @@ function Projects() {
             </li>
           </ul>
         </nav>
-        <main className="content">
-          <section className="course-section">
-            <h3>Registered Courses</h3>
-            {registeredCourses.length === 0 ? (
-              <p>No registered courses</p>
+        <main className="projectContent">
+          <section className="gradedz">
+            <h3>Graded Projects</h3>
+            {gradedProjects.length === 0 ? (
+              <p>No projects have been graded yet</p>
             ) : (
-              <ul className="courseList">
-                {registeredCourses.map((course) => (
-                  <li key={course.id || course.name} className="courseItem">
-                    {course.name}
+              <ul>
+                {gradedProjects.map((graded) => (
+                  <li key={graded.task_id}>
+                    <span>{graded.course}: </span>
+                    <a href={graded.download_url} download>
+                      Download result of {graded.course}
+                    </a>
+                    <p>Score: {graded.score}</p>
                   </li>
                 ))}
               </ul>
             )}
-          </section>
+            </section>
           <section className="projects-section">
             <h3>Projects</h3>
             {projects.length === 0 ? (
               <p>No projects available</p>
             ) : (
-              <ul className="projectList">
+              <ul>
                 {projects.map((project) => (
                   <li key={project.task_id} className="projectItem">
                     <div className="projectDetails">
-                      <span>{project.course}</span>
+                      <span>{project.course}: </span>
                       <a href={project.download_url} download>
                         Download {project.course} Task
                       </a>
@@ -255,12 +281,14 @@ function Projects() {
             )}
           </section>
         </main>
+        </div>
       </>
     );
   } else {
     return (
       <>
         {" "}
+        <div className="teachersContent">
         <header className="logo">
           <h2>EDU HUB</h2>
         </header>
@@ -270,18 +298,18 @@ function Projects() {
               <Link to="/dashboard">Dashboard</Link>
             </li>
             <li>
-              <Link to="/resources">Resources</Link>
+              <Link to="/projects">Projects</Link>
             </li>
             <li>
-              <Link to="/peers">Peers</Link>
+              <Link to="/peers">Students</Link>
             </li>
             <li>
               <Link to="/account">Account</Link>
             </li>
           </ul>
         </nav>
-        <main className="content">
-          <section className="projects-section">
+        <main className="teachcont">
+          <section className="assignmentsection">
             <h3>Create an assignment</h3>
             <form onSubmit={createAssignment}>
               <input type="file" onChange={getAssignment} />
@@ -291,21 +319,21 @@ function Projects() {
                 onChange={(e) => setDueDate(e.target.value)}
                 placeholder="year-month-day"
               />
-              <button type="submit">Upload File</button>
+              <button type="submit">Create an assignment</button>
             </form>
           </section>
-          <section className="projects-section">
+          <section className="gradesection">
             <h3>Ungraded Projects</h3>
             {ungraded.length === 0 ? (
               <p>No projects available</p>
             ) : (
-              <ul className="projectList">
+              <ul>
                 {ungraded.map((project, index) => (
-                  <li key={index} className="projectItem">
-                    <div className="projectDetails">
-                      <span>{project.course}</span>
+                  <li key={index}>
+                    <div>
+                      <span>{project.course}: </span>
                       <a href={project.download_url} download>
-                        Download {project.course} Task
+                        Download student's {project.students_id} answers
                       </a>
                       <p>Student Id: {project.students_id}</p>
                     </div>
@@ -320,7 +348,6 @@ function Projects() {
                             project.task_id
                           )
                         }
-                        className="submitForm"
                       >
                         <input
                           type="file"
@@ -343,6 +370,7 @@ function Projects() {
             )}
           </section>
         </main>
+        </div>
       </>
     );
   }

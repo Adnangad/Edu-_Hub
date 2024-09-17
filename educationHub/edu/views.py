@@ -13,6 +13,7 @@ from django.forms.models import model_to_dict
 from django.core.cache import cache
 from uuid import uuid4
 from .models import Tasks
+from .pusher import pusher_client
 
 db_op = DB_Operations()
 available_courses = ['Math', 'English', 'Chemistry', 'Biology', 'Physics']
@@ -115,11 +116,9 @@ def getStudents(request):
     if request.method == 'GET':
         try:
             token = request.headers['X-Token']
-            print(token)
         except Exception as e:
             return JsonResponse({'error': e})
         user_auth = cache.get(f'auth_{token}')
-        print(user_auth)
         if user_auth:
             try:
                 objs = db_op.get_all(Students)
@@ -513,11 +512,8 @@ def setresource(request):
             data = json.loads(request.body.decode('utf-8'))
             link_type = data.get('type')
             link = data.get('link')
-            if link_type == 'youtube_uri':
-                link = Resources(video_url=link)
-            else:
-                link = Resources(file_link=link)
-            link.save()
+            resource = Resources(link_type=link_type, link=link)
+            resource.save()
             return JsonResponse({'message': 'Success'}, status=200)
         except Exception as e:
             print(f'error is: {e}')
@@ -530,10 +526,84 @@ def getresource(request):
     if request.method == 'GET':
         token = request.headers.get('X-Token')
         auth = cache.get(f'auth_{token}')
+        print(auth)
         if auth:
-            resources = [model_to_dict(obj) for obj in Resources.objects.all()]
-            return JsonResponse({'resources': resources}, status=200, safe=False)
+            try:
+                resources = [model_to_dict(obj) for obj in Resources.objects.all()]
+                return JsonResponse({'resources': resources}, status=200, safe=False)
+            except Exception as e:
+                print(f'Error is :{e}')
+                raise(e)
         else:
-            return JsonResponse({'error': 'Unauthorized'}, status=401)
+            return JsonResponse({'error': 'Unauthorized, please log in to continue'}, status=401)
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=405)
+    
+def getgraded(request):
+    """Retreives the graded projects for the student to see"""
+    if request.method == 'GET':
+        token = request.headers.get('X-Token')
+        auth = cache.get(f'auth_{token}')
+        if not auth:
+            return JsonResponse({'error': 'Unauthorized'}, status=401)
+        student = db_op.find_object(Students, email=auth)
+        registered_courses = db_op.get_registeredCourses(student)
+        if not registered_courses:
+            return JsonResponse({'results': []}, status=200, safe=False)
+        results = []
+        for course in registered_courses:
+            course_name = course.get('name')
+            tasks = Tasks.objects.filter(course=course_name, accomplished=True, graded=True)
+            try:
+                for task in tasks:
+                    download_url = request.build_absolute_uri(f'/edu/download_file/{task.id}')
+                    file_url = task.file.url
+                    print(file_url)
+                    results.append({'course': course_name, 'download_url': download_url, 'task_id': task.id, 'score': task.score})
+            except Tasks.DoesNotExist:
+                continue
+            except Exception as e:
+                return JsonResponse({'error': e}, safe=False, status=404)
+        return JsonResponse({'results': results}, status=200, safe=False)
+    
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+def getranking(request):
+    """Rancks students and displays them"""
+
+@csrf_exempt
+def chatRoom(request):
+    """An endpoint to the chat room"""
+    if request.method == 'POST':
+        token = request.headers.get('X-Token')
+        auth = cache.get(f'auth_{token}')
+        if not auth:
+            return JsonResponse({'error': 'Unauthorized'}, status=401)
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+            try:
+                user = db_op.find_object(Students, email=auth)
+            except Exception as e:
+                user = db_op.find_object(Teachers, email=auth)
+            if isinstance(user, Teachers):
+                username = f'Mentor_{user.first_name}'
+            else:
+                username = user.first_name
+            message = data.get('message')
+            
+            if username and message:
+                print(username)
+                pusher_client.trigger('chat', 'message', {
+                    'username': username,
+                    'message': message,
+                })
+                return JsonResponse({'status': 'success'})
+            else:
+                return JsonResponse({'error': 'Invalid data'}, status=400)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+        except Exception as e:
+            print(f'Error is {e}')
+            return JsonResponse({'error': 'An error occurred'}, status=500)
+    else:
+        return JsonResponse({'error': 'Invalid method'}, status=405)
