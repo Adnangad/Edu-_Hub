@@ -25,5 +25,6 @@ urlpatterns = [
     path("setresource", views.setresource, name='setresource'),
     path("getresource", views.getresource, name='getresource'),
     path("getgraded", views.getgraded, name="getgraded"),
-    path("chatRoom", views.chatRoom, name="chatRoom")
+    path("chatRoom", views.chatRoom, name="chatRoom"),
+    path("profile", views.profile, name="profile"),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -155,6 +155,26 @@ def getTeachers(request):
         else:
             return JsonResponse({"error": 'unauthorized, please log in'}, status=401)
 
+def profile(request):
+    if request.method == 'GET':
+        token = request.headers['X-Token']
+        user_auth = cache.get(f'auth_{token}')
+        if user_auth:
+            print(user_auth)
+            try:
+                user = db_op.find_object(Teachers, email=user_auth)
+                return JsonResponse({'first': user.first_name, 'last': user.last_name}, safe=False, status=200)
+            except NoResultFound:
+                user = db_op.find_object(Students, email=user_auth)
+                return JsonResponse({'first': user.first_name, 'last': user.last_name}, safe=False, status=200)
+            except Exception as e:
+                print(f'Error is : {e}')
+                return JsonResponse({"error": e}, status=403)
+        else:
+            return JsonResponse({"error": 'unauthorized, please login'}, status=401)
+    else:
+        return JsonResponse({"error": 'Invalid request method'}, status=404)
+
 def getCourses(request):
     """Gets al the courses the student has registered for"""
     token = request.headers['X-Token']
