@@ -12,6 +12,10 @@ function Chat() {
     Pusher.logToConsole = true;
     const secret_key = process.env.REACT_APP_API_KEY;
     const cluster = process.env.REACT_APP_CLUSTER
+    if (!secret_key) {
+      console.error("Pusher app key is missing");
+      return;
+    }
 
     const pusher = new Pusher(secret_key, {
       cluster: cluster,
@@ -40,7 +44,7 @@ function Chat() {
       },
       body: JSON.stringify({ message }),
     });
-
+    console.log(message);
     setMessage("");
   };
 

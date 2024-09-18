@@ -197,90 +197,98 @@ function Projects() {
   if (model === "Students") {
     return (
       <>
-      <div className="stdcont">
-        <header className="logo">
-          <h2>EDU HUB</h2>
-        </header>
-        <nav className="navBar">
-          <ul className="navBarLinks">
-            <li>
-              <Link to="/dashboard">Dashboard</Link>
-            </li>
-            <li>
-              <Link to="/resources">Resources</Link>
-            </li>
-            <li>
-              <Link to="/projects">Projects</Link>
-            </li>
-            <li>
-              <Link to="/peers">Peers</Link>
-            </li>
-            <li>
-              <Link to="/account">Account</Link>
-            </li>
-          </ul>
-        </nav>
-        <main className="projectContent">
-          <section className="gradedz">
-            <h3>Graded Projects</h3>
-            {gradedProjects.length === 0 ? (
-              <p>No projects have been graded yet</p>
-            ) : (
-              <ul>
-                {gradedProjects.map((graded) => (
-                  <li key={graded.task_id}>
-                    <span>{graded.course}: </span>
-                    <a href={graded.download_url} download>
-                      Download result of {graded.course}
-                    </a>
-                    <p>Score: {graded.score}</p>
-                  </li>
-                ))}
-              </ul>
-            )}
-            </section>
-          <section className="projects-section">
-            <h3>Projects</h3>
-            {projects.length === 0 ? (
-              <p>No projects available</p>
-            ) : (
-              <ul>
-                {projects.map((project) => (
-                  <li key={project.task_id} className="projectItem">
-                    <div className="projectDetails">
-                      <span>{project.course}: </span>
-                      <a href={project.download_url} download>
-                        Download {project.course} Task
+        <div className="stdcont">
+          <header className="logo">
+            <h2>EDU HUB</h2>
+          </header>
+          <nav className="navBar">
+            <ul className="navBarLinks">
+              <li>
+                <Link to="/dashboard">Dashboard</Link>
+              </li>
+              <li>
+                <Link to="/resources">Resources</Link>
+              </li>
+              <li>
+                <Link to="/projects">Projects</Link>
+              </li>
+              <li>
+                <Link to="/peers">Peers</Link>
+              </li>
+              <li>
+                <Link to="/account">Account</Link>
+              </li>
+              <li>
+                <Link to="/chat">Chat</Link>
+              </li>
+            </ul>
+          </nav>
+          <main className="projectContent">
+            <section className="gradedz">
+              <h3>Graded Projects</h3>
+              {gradedProjects.length === 0 ? (
+                <p>No projects have been graded yet</p>
+              ) : (
+                <ul>
+                  {gradedProjects.map((graded) => (
+                    <li key={graded.task_id}>
+                      <span>{graded.course}: </span>
+                      <a href={graded.download_url} download>
+                        Download result of {graded.course}
                       </a>
-                      <p>
-                        Due on: {new Date(project.due_on).toLocaleDateString()}
-                      </p>
-                    </div>
-                    {submitedproject === project.task_id ? (
-                      <p className="status">Done</p>
-                    ) : (
-                      <form
-                        onSubmit={(event) =>
-                          submitProject(event, project.task_id, project.course)
-                        }
-                        className="submitForm"
-                      >
-                        <input
-                          type="file"
-                          onChange={getFile}
-                          className="fileInput"
-                        />
-                        <button type="submit" className="submitButton">
-                          Submit Project
-                        </button>
-                      </form>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </section>
-        </main>
+                      <p>Score: {graded.score}</p>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </section>
+            <section className="projects-section">
+              <h3>Projects</h3>
+              {projects.length === 0 ? (
+                <p>No projects available</p>
+              ) : (
+                <ul>
+                  {projects.map((project) => (
+                    <li key={project.task_id} className="projectItem">
+                      <div className="projectDetails">
+                        <span>{project.course}: </span>
+                        <a href={project.download_url} download>
+                          Download {project.course} Task
+                        </a>
+                        <p>
+                          Due on:{" "}
+                          {new Date(project.due_on).toLocaleDateString()}
+                        </p>
+                      </div>
+                      {submitedproject === project.task_id ? (
+                        <p className="status">Done</p>
+                      ) : (
+                        <form
+                          onSubmit={(event) =>
+                            submitProject(
+                              event,
+                              project.task_id,
+                              project.course
+                            )
+                          }
+                          className="submitForm"
+                        >
+                          <input
+                            type="file"
+                            onChange={getFile}
+                            className="fileInput"
+                          />
+                          <button type="submit" className="submitButton">
+                            Submit Project
+                          </button>
+                        </form>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </section>
+          </main>
         </div>
       </>
     );
@@ -289,87 +297,90 @@ function Projects() {
       <>
         {" "}
         <div className="teachersContent">
-        <header className="logo">
-          <h2>EDU HUB</h2>
-        </header>
-        <nav className="navBar">
-          <ul className="navBarLinks">
-            <li>
-              <Link to="/dashboard">Dashboard</Link>
-            </li>
-            <li>
-              <Link to="/projects">Projects</Link>
-            </li>
-            <li>
-              <Link to="/peers">Students</Link>
-            </li>
-            <li>
-              <Link to="/account">Account</Link>
-            </li>
-          </ul>
-        </nav>
-        <main className="teachcont">
-          <section className="assignmentsection">
-            <h3>Create an assignment</h3>
-            <form onSubmit={createAssignment}>
-              <input type="file" onChange={getAssignment} />
-              <input
-                type="date"
-                value={dueDate}
-                onChange={(e) => setDueDate(e.target.value)}
-                placeholder="year-month-day"
-              />
-              <button type="submit">Create an assignment</button>
-            </form>
-          </section>
-          <section className="gradesection">
-            <h3>Ungraded Projects</h3>
-            {ungraded.length === 0 ? (
-              <p>No projects available</p>
-            ) : (
-              <ul>
-                {ungraded.map((project, index) => (
-                  <li key={index}>
-                    <div>
-                      <span>{project.course}: </span>
-                      <a href={project.download_url} download>
-                        Download student's {project.students_id} answers
-                      </a>
-                      <p>Student Id: {project.students_id}</p>
-                    </div>
-                    {graded_id === project.task_id ? (
-                      <p>You have graded student {project.students_id}</p>
-                    ) : (
-                      <form
-                        onSubmit={(event) =>
-                          gradeStudent(
-                            event,
-                            project.students_id,
-                            project.task_id
-                          )
-                        }
-                      >
-                        <input
-                          type="file"
-                          onChange={getanswFile}
-                          className="fileInput"
-                        />
-                        <input
-                          type="number"
-                          value={score}
-                          onChange={(e) => setScore(e.target.value)}
-                        ></input>
-                        <button type="submit" className="submitButton">
-                          Grade Student
-                        </button>
-                      </form>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </section>
-        </main>
+          <header className="logo">
+            <h2>EDU HUB</h2>
+          </header>
+          <nav className="navBar">
+            <ul className="navBarLinks">
+              <li>
+                <Link to="/dashboard">Dashboard</Link>
+              </li>
+              <li>
+                <Link to="/projects">Projects</Link>
+              </li>
+              <li>
+                <Link to="/peers">Students</Link>
+              </li>
+              <li>
+                <Link to="/account">Account</Link>
+              </li>
+              <li>
+                <Link to="/chat">Chat</Link>
+              </li>
+            </ul>
+          </nav>
+          <main className="teachcont">
+            <section className="assignmentsection">
+              <h3>Create an assignment</h3>
+              <form onSubmit={createAssignment}>
+                <input type="file" onChange={getAssignment} />
+                <input
+                  type="date"
+                  value={dueDate}
+                  onChange={(e) => setDueDate(e.target.value)}
+                  placeholder="year-month-day"
+                />
+                <button type="submit">Create an assignment</button>
+              </form>
+            </section>
+            <section className="gradesection">
+              <h3>Ungraded Projects</h3>
+              {ungraded.length === 0 ? (
+                <p>No projects available</p>
+              ) : (
+                <ul>
+                  {ungraded.map((project, index) => (
+                    <li key={index}>
+                      <div>
+                        <span>{project.course}: </span>
+                        <a href={project.download_url} download>
+                          Download student's {project.students_id} answers
+                        </a>
+                        <p>Student Id: {project.students_id}</p>
+                      </div>
+                      {graded_id === project.task_id ? (
+                        <p>You have graded student {project.students_id}</p>
+                      ) : (
+                        <form
+                          onSubmit={(event) =>
+                            gradeStudent(
+                              event,
+                              project.students_id,
+                              project.task_id
+                            )
+                          }
+                        >
+                          <input
+                            type="file"
+                            onChange={getanswFile}
+                            className="fileInput"
+                          />
+                          <input
+                            type="number"
+                            value={score}
+                            onChange={(e) => setScore(e.target.value)}
+                          ></input>
+                          <button type="submit" className="submitButton">
+                            Grade Student
+                          </button>
+                        </form>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </section>
+          </main>
         </div>
       </>
     );

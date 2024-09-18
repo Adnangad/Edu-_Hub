@@ -61,6 +61,9 @@ function Peers() {
               <li>
                 <Link to="/account">Account</Link>
               </li>
+              <li>
+                <Link to="/chat">Chat</Link>
+              </li>
             </ul>
           </nav>
           {!errorMessage ? (
@@ -80,7 +83,9 @@ function Peers() {
                       <td>{student.id}</td>
                       <td>{student.first_name}</td>
                       <td>{student.last_name}</td>
-                      <td><a href={`mailto:${student.email}`}>{student.email}</a></td>
+                      <td>
+                        <a href={`mailto:${student.email}`}>{student.email}</a>
+                      </td>
                     </tr>
                   ))}
                 </tbody>

@@ -77,7 +77,7 @@ function SignUp() {
             <div className="additional-info">
               <label htmlFor="otp-input">Enter OTP:</label>
               <input
-                type="text"
+                type="password"
                 id="otp-input"
                 placeholder="Enter OTP"
                 value={otp}
