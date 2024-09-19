@@ -47,22 +47,11 @@ function Login() {
       <main id="login-form-container">
         <form id="login-form" onSubmit={logIn}>
           <div className="radio-group">
-            <input
-              type="radio"
-              id="student-radio"
-              name="usertype"
-              value="Students"
-              onChange={(e) => setType(e.target.value)}
-            />
-            <label htmlFor="student-radio">Student</label>
-            <input
-              type="radio"
-              id="teacher-radio"
-              name="usertype"
-              value="Teachers"
-              onChange={(e) => setType(e.target.value)}
-            />
-            <label htmlFor="teacher-radio">Teacher</label>
+            <label htmlFor="usertype">Type of user:</label>
+            <select name="usertype" id="uzertype" onChange={(e) => setType(e.target.value)}>
+              <option value="Students">Student</option>
+              <option value="Teachers">Teacher</option>
+            </select>
           </div>
           <div className="input-group">
             <label htmlFor="email-input">Email:</label>

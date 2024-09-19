@@ -357,8 +357,23 @@ def getmeeting(request):
             current = now()
             schedules_to_delete = Schedule.objects.filter(time__lt=current - timedelta(hours=2))
             schedules_to_delete.delete()
-            schedule = [model_to_dict(obj) for obj in Schedule.objects.all()]
-            print(schedule)
+            try:
+                user = db_op.find_object(Students, email=auth)
+                regcourses = db_op.get_registeredCourses(user)
+                print(regcourses)
+                listofCourses = []
+                for el in regcourses:
+                    listofCourses.append(el['name'])
+                schedule = []
+                for course in listofCourses:
+                    objs = Schedule.objects.filter(course_name=course)
+                    schedule.extend([model_to_dict(obj) for obj in objs])
+            except NoResultFound:
+                user = db_op.find_object(Teachers, email=auth)
+                schedule = [model_to_dict(obj) for obj in Schedule.objects.all().filter(course_name=user.subject)]
+            except Exception as e:
+                print(f'Error is {e}')
+                raise e
             print(type(schedule))
             return JsonResponse({'schedule': schedule}, status=200, safe=False)
         else:
@@ -380,7 +395,7 @@ def get_tasks(request):
         projects = []
         for course in registered_courses:
             course_name = course.get('name')
-            tasks = Tasks.objects.filter(course=course_name, accomplished=False, graded=False)
+            tasks = Tasks.objects.filter(course=course_name, accomplished=False, graded=False, student_id=student)
             try:
                 for task in tasks:
                     print(task.id)
@@ -416,7 +431,7 @@ def get_projects(request):
                 students = model_to_dict(task.student_id)
                 download_url = request.build_absolute_uri(f'/edu/download_file/{task.id}')
                 file_url = task.file.url
-                ungraded_projects.append({'course': teacher.subject, 'download_url': download_url, 'students_id': students['id'], 'task_id': task.id})
+                ungraded_projects.append({'course': teacher.subject, 'download_url': download_url, 'students_id': students['last_name'], 'task_id': task.id})
         except Tasks.DoesNotExist:
             return JsonResponse({'ungraded_projects': []}, status=200, safe=False)
         except Exception as e:
@@ -530,9 +545,10 @@ def setresource(request):
             return JsonResponse({'error': 'Unauthorized'}, status=401)
         try:
             data = json.loads(request.body.decode('utf-8'))
+            teach = db_op.find_object(Teachers, email=auth)
             link_type = data.get('type')
             link = data.get('link')
-            resource = Resources(link_type=link_type, link=link)
+            resource = Resources(link_type=link_type, link=link, course=teach.subject)
             resource.save()
             return JsonResponse({'message': 'Success'}, status=200)
         except Exception as e:
@@ -546,7 +562,6 @@ def getresource(request):
     if request.method == 'GET':
         token = request.headers.get('X-Token')
         auth = cache.get(f'auth_{token}')
-        print(auth)
         if auth:
             try:
                 resources = [model_to_dict(obj) for obj in Resources.objects.all()]
@@ -601,21 +616,21 @@ def chatRoom(request):
             return JsonResponse({'error': 'Unauthorized'}, status=401)
         try:
             data = json.loads(request.body.decode('utf-8'))
+            txt = data.get('message')
             try:
                 user = db_op.find_object(Students, email=auth)
+                message = Messages.objects.create(std_user=user, text=txt)
             except Exception as e:
                 user = db_op.find_object(Teachers, email=auth)
+                message = Messages.objects.create(teach_user=user, text=txt)
             if isinstance(user, Teachers):
                 username = f'Mentor_{user.first_name}'
             else:
-                username = user.first_name
-            message = data.get('message')
-            
-            if username and message:
-                print(username)
+                username = f'Student_{user.first_name}'
+            if username and txt:
                 pusher_client.trigger('chat', 'message', {
                     'username': username,
-                    'message': message,
+                    'message': message.text,
                 })
                 return JsonResponse({'status': 'success'})
             else:

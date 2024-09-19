@@ -50,6 +50,14 @@ class Resources(models.Model):
     """defines a resource class"""
     link = models.CharField(max_length=400, null=True)
     link_type = models.CharField(max_length=50, null=True)
+    course = models.CharField(max_length=70, null=True)
+
+class Messages(models.Model):
+    """Tables class to store messages"""
+    std_user = models.ForeignKey(Students, max_length=500, null=True, on_delete=models.CASCADE)
+    teach_user = models.ForeignKey(Teachers, max_length=500, null=True, on_delete=models.CASCADE)
+    text = models.TextField()
+    time = models.DateTimeField(auto_now_add=True)
 
     
 class DB_Operations:

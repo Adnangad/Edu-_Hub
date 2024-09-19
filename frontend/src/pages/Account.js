@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 function Account() {
   const token = sessionStorage.getItem("token");
   const model = sessionStorage.getItem("modelType");
-  const [firstname, setFirst] = useState(""); 
+  const [firstname, setFirst] = useState("");
   const [lastname, setLast] = useState("");
   const email = sessionStorage.getItem("email");
   const old_password = sessionStorage.getItem("old_password");
@@ -79,9 +79,7 @@ function Account() {
           alert(data.error);
         }
       } catch (error) {
-        alert(
-          "Unable to fetch your account details, please try again later"
-        );
+        alert("Unable to fetch your account details, please try again later");
       }
     }
     if (model === "Students") {
@@ -195,45 +193,42 @@ function Account() {
               <h3>Update Account</h3>
               <br />
               <form className="updateForm" onSubmit={updateAccount}>
-                <div className="form-group">
-                  <label htmlFor="updf_name">First Name:</label>
-                  <input
-                    type="text"
-                    id="updf_name"
-                    name="name"
-                    placeholder="Enter Your First Name"
-                    className="update_bar"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="updl_name">Last Name:</label>
-                  <input
-                    type="text"
-                    id="updl_name"
-                    name="name"
-                    placeholder="Enter Your Last Name"
-                    className="update_bar"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="uppassword">Password:</label>
-                  <input
-                    type="password"
-                    id="uppassword"
-                    name="password"
-                    placeholder="Enter Password"
-                    className="update_bar"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                </div>
-
+                <label htmlFor="updf_name">First Name:</label>
+                <br />
+                <input
+                  type="text"
+                  id="updf_name"
+                  name="name"
+                  placeholder="Enter Your First Name"
+                  className="update_bar"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                />
+                <br />
+                <label htmlFor="updl_name">Last Name:</label>
+                <br />
+                <input
+                  type="text"
+                  id="updl_name"
+                  name="name"
+                  placeholder="Enter Your Last Name"
+                  className="update_bar"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                />
+                <br />
+                <label htmlFor="uppassword">Password:</label>
+                <br />
+                <input
+                  type="password"
+                  id="uppassword"
+                  name="password"
+                  placeholder="Enter Password"
+                  className="update_bar"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <br />
                 <button type="submit" className="updatebut">
                   Update Account
                 </button>
@@ -315,45 +310,42 @@ function Account() {
             <div className="details">
               <h3>Update Details</h3>
               <form className="updateForm" onSubmit={updateAccount}>
-                <div className="form-group">
-                  <label htmlFor="updf_name">First Name:</label>
-                  <input
-                    type="text"
-                    id="updf_name"
-                    name="name"
-                    placeholder="Enter Your First Name"
-                    className="update_bar"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="updl_name">Last Name:</label>
-                  <input
-                    type="text"
-                    id="updl_name"
-                    name="name"
-                    placeholder="Enter Your Last Name"
-                    className="update_bar"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="uppassword">Password:</label>
-                  <input
-                    type="password"
-                    id="uppassword"
-                    name="password"
-                    placeholder="Enter Password"
-                    className="update_bar"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                </div>
-
+                <label htmlFor="updf_name">First Name:</label>
+                <br />
+                <input
+                  type="text"
+                  id="updf_name"
+                  name="name"
+                  placeholder="Enter Your First Name"
+                  className="update_bar"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                />
+                <br />
+                <label htmlFor="updl_name">Last Name:</label>
+                <br />
+                <input
+                  type="text"
+                  id="updl_name"
+                  name="name"
+                  placeholder="Enter Your Last Name"
+                  className="update_bar"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                />
+                <br />
+                <label htmlFor="uppassword">Password:</label>
+                <br />
+                <input
+                  type="password"
+                  id="uppassword"
+                  name="password"
+                  placeholder="Enter Password"
+                  className="update_bar"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <br />
                 <button type="submit" className="updatebut">
                   Update Account
                 </button>

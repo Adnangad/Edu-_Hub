@@ -26,7 +26,7 @@ a {
   padding: 20px 0;
   color: orange;
   font-size: 36px;
-  height: 50px;
+  height: 75px;
   width: 100%;
   font-weight: bold;
   letter-spacing: 1px;
@@ -57,9 +57,9 @@ a {
   text-align: center;
   background-color: white;
   padding: 20px 0;
-  color: blueviolet;
+  color: orange;
   font-size: 36px;
-  height: 50px;
+  height: 75px;
   width: 100%;
   font-weight: bold;
   letter-spacing: 1px;
@@ -71,7 +71,7 @@ a {
   top: 0;
   left: 0;
   width: 13%;
-  background-color: blueviolet;
+  background-color: #343a40;
   height: 100vh;
   font-size: 30px;
   margin: 0;
@@ -222,48 +222,47 @@ h3 {
   border: none;
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
   float: left;
-  width: 40%;
-  height: 350px;
-  margin-top: 3px;
+  width: 95%;
+  height: auto;
+  margin-top: 30px;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
   padding-top: 20px;
   justify-content: left;
-  padding-left: 100px;
+  padding-left: 50px;
   margin-left: 15px;
+}
+.teachersContent .schedule input {
+  width: 85%;
+  margin-bottom: 10px;
 }
 .teacherSchedule {
   border: none;
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
-  float: right;
-  width: 40%;
-  height: 250px;
-  margin-top: 3px;
+  float: left;
+  width: 42%;
+  height: auto;
+  margin-top: 10px;
   margin-left: 10px;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
   padding-top: 20px;
-  padding-left: 100px;
+  padding-left: 45px;
 }
 .teachersContent .teacherSchedule ul {
   list-style-type: none;
 }
 
-.teachersContent .teacherSchedule ul li a {
+.teacherSchedule ul li a {
   color: blueviolet;
 }
 
-.teachersContent .teacherSchedule ul li a:hover {
+.teacherSchedule ul li a:hover {
   color: gold;
 }
 
-.teachcont form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
 
 .teachcont input {
   padding: 12px;
@@ -278,6 +277,7 @@ h3 {
   border: 1px solid wheat;
   background-color: blueviolet;
   cursor: pointer;
+  width: 70%;
   border-radius: 6px;
 }
 
@@ -287,37 +287,22 @@ h3 {
 .resourceForm {
   border: none;
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
-  float: left;
-  width: 45%;
+  float: right;
+  width: 40%;
+  left: 0;
   height: auto;
-  margin-top: 100px;
+  margin-top: -150px;
+  margin-right: 20px;
   border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  padding-top: 20px;
-  justify-content: left;
-  padding-left: 30px;
-
-}
-
-.resourceForm {
-  border: none;
-  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
-  float: left;
-  width: 45%; 
-  height: 350px;
-  margin-top: 20px;
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
   padding: 20px;
-  justify-content: flex-start;
   padding-left: 30px;
   background-color: #fff;
 }
-
-.teachcont::after {
-  content: "";
-  display: table;
-  clear: both;
+.resourceForm input {
+  width: 70%;
+}
+.resourceForm select {
+  width: 200px;
+  height: 25px;
+  font-size: 15px;
 }

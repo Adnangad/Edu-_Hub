@@ -236,35 +236,6 @@ function Dashboard() {
             </ul>
           </nav>
           <div className="teachcont">
-            <section className="schedule">
-              <h3>Schedule a class</h3>
-              <form onSubmit={setMeet}>
-                <input
-                  type="text"
-                  placeholder="Please enter the course name"
-                  value={course}
-                  onChange={(e) => setCourse(e.target.value)}
-                />
-                <input
-                  type="text"
-                  placeholder="Please enter the link"
-                  value={link}
-                  onChange={(e) => setLink(e.target.value)}
-                />
-                <input
-                  type="number"
-                  placeholder="Duration of meeting"
-                  value={duration}
-                  onChange={(e) => setDuration(e.target.value)}
-                />
-                <input
-                  type="datetime-local"
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
-                />
-                <button type="submit">Schedule meeting</button>
-              </form>
-            </section>
             <section className="teacherSchedule">
               <h3>Your Schedule</h3>
               <ul>
@@ -288,30 +259,55 @@ function Dashboard() {
               <h3>Resource for students</h3>
               <form onSubmit={setResources}>
                 <label htmlFor="typeoflink">Type of link:</label>
-                <input
-                  type="radio"
-                  name="linkType"
-                  value="Youtube_Video"
+                <br/>
+                <select
+                  name="typeoflink"
                   onChange={(e) => setType(e.target.value)}
-                />{" "}
-                YouTube Video
-                <input
-                  type="radio"
-                  name="linkType"
-                  value="file_link"
-                  onChange={(e) => setType(e.target.value)}
-                />{" "}
-                File Link
+                >
+                  <option value="link">Youtube Video</option>
+                  <option value="embed">File Link</option>
+                </select>
+                <br/>
                 <label htmlFor="videoUrl">Link:</label>
+                <br/>
                 <input
                   type="text"
                   id="videoUrl"
                   name="videoUrl"
-                  placeholder="Enter video URL or embed code"
+                  placeholder="Enter link or embed code"
                   value={resLink}
                   onChange={(e) => setResLink(e.target.value)}
                 />
-                <button type="submit">Embed Video</button>
+                <button type="submit">Send Resource</button>
+              </form>
+            </section>
+            <section className="schedule">
+              <h3>Schedule a class</h3>
+              <form onSubmit={setMeet}>
+                <input
+                  type="text"
+                  placeholder="Please enter the course name"
+                  value={course}
+                  onChange={(e) => setCourse(e.target.value)}
+                />
+                <input
+                  type="text"
+                  placeholder="Please enter the link"
+                  value={link}
+                  onChange={(e) => setLink(e.target.value)}
+                />
+                <input
+                  type="number"
+                  placeholder="Duration of meeting in hours"
+                  value={duration}
+                  onChange={(e) => setDuration(e.target.value)}
+                />
+                <input
+                  type="datetime-local"
+                  value={date}
+                  onChange={(e) => setDate(e.target.value)}
+                />
+                <button type="submit">Schedule meeting</button>
               </form>
             </section>
           </div>

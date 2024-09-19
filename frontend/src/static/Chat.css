@@ -8,12 +8,14 @@
 }
 
 .chat-header {
-  background-color: #007bff;
-  color: white;
   text-align: center;
-  padding: 20px;
-  font-size: 24px;
+  background-color: white;
+  padding: 20px 0;
+  color: orange;
+  height: 75px;
+  width: 100%;
   font-weight: bold;
+  letter-spacing: 1px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -21,7 +23,7 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 200px;
+  width: 13%;
   background-color: #343a40;
   height: 100vh;
   color: #fff;

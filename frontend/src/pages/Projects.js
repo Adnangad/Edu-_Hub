@@ -245,7 +245,7 @@ function Projects() {
             <section className="projects-section">
               <h3>Projects</h3>
               {projects.length === 0 ? (
-                <p>No projects available</p>
+                <p>None, enjoy the silence</p>
               ) : (
                 <ul>
                   {projects.map((project) => (
@@ -322,14 +322,19 @@ function Projects() {
           <main className="teachcont">
             <section className="assignmentsection">
               <h3>Create an assignment</h3>
+              <br />
               <form onSubmit={createAssignment}>
                 <input type="file" onChange={getAssignment} />
+                <br />
+                <label htmlFor="duedate">Due Date:</label>
                 <input
                   type="date"
+                  name="duedate"
                   value={dueDate}
                   onChange={(e) => setDueDate(e.target.value)}
                   placeholder="year-month-day"
                 />
+                <br />
                 <button type="submit">Create an assignment</button>
               </form>
             </section>
@@ -346,7 +351,7 @@ function Projects() {
                         <a href={project.download_url} download>
                           Download student's {project.students_id} answers
                         </a>
-                        <p>Student Id: {project.students_id}</p>
+                        <p>Students last name: {project.students_id}</p>
                       </div>
                       {graded_id === project.task_id ? (
                         <p>You have graded student {project.students_id}</p>
