@@ -34,7 +34,7 @@ function Chat() {
   const submit = async (e) => {
     e.preventDefault();
 
-    if (!message.trim()) return; // Avoid sending empty messages
+    if (!message.trim()) return;
 
     await fetch("http://localhost:8000/edu/chatRoom", {
       method: "POST",
@@ -49,7 +49,7 @@ function Chat() {
   };
 
   useEffect(() => {
-    console.log("Messages updated:", messages); // Debug log
+    console.log("Messages updated:", messages);
   }, [messages]);
 
   return (
