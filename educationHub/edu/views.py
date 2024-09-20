@@ -34,11 +34,11 @@ def signUp(request):
             first_name = data.get('first_name')
             last_name = data.get('last_name')
             model_name = data.get('type')
+            print(model_name)
             email = data.get('email')
             password = data.get('password')
             course = data.get('subject')
             otp = data.get('otp')
-            print(otp)
             token = uuid4()
             if model_name == 'Teachers':
                 if otp not in otps:
@@ -355,7 +355,7 @@ def getmeeting(request):
         auth = cache.get(f'auth_{token}')
         if auth:
             current = now()
-            schedules_to_delete = Schedule.objects.filter(time__lt=current - timedelta(hours=2))
+            schedules_to_delete = Schedule.objects.filter(time__lt=current - timedelta(hours=4))
             schedules_to_delete.delete()
             try:
                 user = db_op.find_object(Students, email=auth)
@@ -425,13 +425,16 @@ def get_projects(request):
         teacher = db_op.find_object(Teachers, email=auth)
         ungraded_projects = []
         try:
+            current = now()
+            tasks_to_grade = Tasks.objects.filter(due_on__lt=current, graded=False)
+            tasks_to_grade.update(score=0, graded=False)
             tasks = Tasks.objects.filter(course=teacher.subject, accomplished=True, graded=False)
             print(tasks)
             for task in tasks:
                 students = model_to_dict(task.student_id)
                 download_url = request.build_absolute_uri(f'/edu/download_file/{task.id}')
                 file_url = task.file.url
-                ungraded_projects.append({'course': teacher.subject, 'download_url': download_url, 'students_id': students['last_name'], 'task_id': task.id})
+                ungraded_projects.append({'course': teacher.subject, 'download_url': download_url, 'students_id': students['id'], 'task_id': task.id})
         except Tasks.DoesNotExist:
             return JsonResponse({'ungraded_projects': []}, status=200, safe=False)
         except Exception as e:
@@ -546,31 +549,35 @@ def setresource(request):
         try:
             data = json.loads(request.body.decode('utf-8'))
             teach = db_op.find_object(Teachers, email=auth)
+            if not teach:
+                return JsonResponse({'error': 'Teacher not found'}, status=404)
+            
             link_type = data.get('type')
+            print(f'Link type is {link_type}')
             link = data.get('link')
             resource = Resources(link_type=link_type, link=link, course=teach.subject)
             resource.save()
             return JsonResponse({'message': 'Success'}, status=200)
         except Exception as e:
-            print(f'error is: {e}')
-            return JsonResponse({'error': e}, safe=False, status=422)
+            print(f'Error: {e}')
+            return JsonResponse({'error': str(e)}, safe=False, status=422)
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 def getresource(request):
-    """Retreives the resources"""
+    """Retrieves the resources"""
     if request.method == 'GET':
         token = request.headers.get('X-Token')
         auth = cache.get(f'auth_{token}')
-        if auth:
-            try:
-                resources = [model_to_dict(obj) for obj in Resources.objects.all()]
-                return JsonResponse({'resources': resources}, status=200, safe=False)
-            except Exception as e:
-                print(f'Error is :{e}')
-                raise(e)
-        else:
-            return JsonResponse({'error': 'Unauthorized, please log in to continue'}, status=401)
+        if not auth:
+            return JsonResponse({'error': 'Unauthorized'}, status=401)
+
+        try:
+            resources = [model_to_dict(obj) for obj in Resources.objects.all()]
+            return JsonResponse({'resources': resources}, status=200, safe=False)
+        except Exception as e:
+            print(f'Error: {e}')
+            return JsonResponse({'error': 'Server Error'}, status=500)
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=405)
     

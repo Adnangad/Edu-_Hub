@@ -262,10 +262,11 @@ function Dashboard() {
                 <br/>
                 <select
                   name="typeoflink"
+                  id="typeoflink"
                   onChange={(e) => setType(e.target.value)}
                 >
-                  <option value="link">Youtube Video</option>
-                  <option value="embed">File Link</option>
+                  <option value="embed">Youtube Video</option>
+                  <option value="link">File Link</option>
                 </select>
                 <br/>
                 <label htmlFor="videoUrl">Link:</label>

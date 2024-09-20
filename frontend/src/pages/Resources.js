@@ -47,7 +47,7 @@ function Resources() {
   return (
     <>
       {modelType === "Teachers" ? (
-        <p>Unauthorized</p>
+        <p>You are not authorized to view student resources.</p>
       ) : (
         <div className="stdcont">
           <header className="logo">
@@ -75,12 +75,24 @@ function Resources() {
           <div className="resourcedisplay">
             <p>The video or resource will be displayed here</p>
             <ul>
-              {link.map((lnk) => (
-                <li
-                  key={lnk.id}
-                  dangerouslySetInnerHTML={{ __html: lnk.link }}
-                />
-              ))}
+              {link.map((lnk) =>
+                lnk.link_type === "embed" ? (
+                  <li
+                    key={lnk.id}
+                    dangerouslySetInnerHTML={{ __html: lnk.link }}
+                  />
+                ) : (
+                  <li key={lnk.id}>
+                    <a
+                      href={lnk.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {lnk.course} (Download)
+                    </a>
+                  </li>
+                )
+              )}
             </ul>
           </div>
         </div>

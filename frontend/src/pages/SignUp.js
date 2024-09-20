@@ -37,9 +37,6 @@ function SignUp() {
       } else {
         sessionStorage.setItem("token", data.token);
         sessionStorage.setItem("modelType", type);
-        sessionStorage.setItem("firstname", firstname);
-        sessionStorage.setItem("lastname", lastname);
-        sessionStorage.setItem("email", email);
         navigate("/dashboard", { state: { model: type, user: data } });
       }
     } catch (error) {
@@ -57,7 +54,12 @@ function SignUp() {
           <h2>Sign Up</h2>
           <div className="radio-group">
             <label htmlFor="usertype">Type of user:</label>
-            <select name="usertype" id="uzertype"  onChange={(e) => setType(e.target.value)}>
+            <select
+              name="usertype"
+              id="usertype"
+              onChange={(e) => setType(e.target.value)}
+            >
+              <option value="">Select User Type</option>
               <option value="Students">Student</option>
               <option value="Teachers">Teacher</option>
             </select>

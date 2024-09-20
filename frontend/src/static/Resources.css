@@ -6,4 +6,16 @@
 }
 .resourcedisplay ul {
     list-style-type: none;
+    justify-content: center;
+    align-items: center;
+}
+.resourcedisplay ul li {
+    margin-bottom: 20px;
+}
+.resourcedisplay ul li a {
+    font-size: 30px;
+}
+.resourcedisplay p {
+    text-align: center;
+    font-size: 20px;
 }

@@ -3,19 +3,25 @@ import "../static/Login.css";
 import { Link, useNavigate } from "react-router-dom";
 
 function Login() {
-  const [type, setType] = useState("");
+  const [type, setType] = useState("Students");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);  // Loading state
   const url = "http://127.0.0.1:8000/edu/login";
   const navigate = useNavigate();
 
   async function logIn(event) {
     event.preventDefault();
-    const doc = {
-      type: type,
-      email: email,
-      password: password,
-    };
+    setLoading(true);
+    
+    if (!email || !password || !type) {
+      alert("Please fill out all fields");
+      setLoading(false);
+      return;
+    }
+
+    const doc = { type, email, password };
+    
     try {
       const response = await fetch(url, {
         method: "POST",
@@ -23,6 +29,7 @@ function Login() {
         body: JSON.stringify(doc),
       });
       const data = await response.json();
+      
       if (response.status === 200) {
         navigate("/dashboard", { state: { user: data.user, model: type } });
         sessionStorage.setItem("token", data.token);
@@ -30,11 +37,12 @@ function Login() {
         sessionStorage.setItem("email", email);
         sessionStorage.setItem("old_password", password);
       } else {
-        alert(data.error);
+        alert(data.error || "Login failed");
       }
     } catch (error) {
-      alert("Unable to login at this time, please try again later");
+      alert("Unable to login at this time, please try again later.");
     }
+    setLoading(false);
   }
 
   return (
@@ -48,7 +56,7 @@ function Login() {
         <form id="login-form" onSubmit={logIn}>
           <div className="radio-group">
             <label htmlFor="usertype">Type of user:</label>
-            <select name="usertype" id="uzertype" onChange={(e) => setType(e.target.value)}>
+            <select name="usertype" id="usertype" onChange={(e) => setType(e.target.value)}>
               <option value="Students">Student</option>
               <option value="Teachers">Teacher</option>
             </select>
@@ -75,8 +83,8 @@ function Login() {
               className="input-field"
             />
           </div>
-          <button type="submit" id="login-button">
-            Login
+          <button type="submit" id="login-button" disabled={loading}>
+            {loading ? "Logging in..." : "Login"}
           </button>
           <p id="signup-link">
             <Link to="/signup">Or create a new account</Link>
